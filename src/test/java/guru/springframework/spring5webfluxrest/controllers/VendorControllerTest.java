@@ -2,6 +2,7 @@ package guru.springframework.spring5webfluxrest.controllers;
 
 
 import guru.springframework.spring5webfluxrest.domain.Vendor;
+import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.services.VendorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,7 +102,7 @@ public class VendorControllerTest {
 
     @Test
     public void TestUpdateVendor(){
-        BDDMockito.given(vendorService.saveVendor(any(Vendor.class)))
+        BDDMockito.given(vendorService.saveVendor(any(String.class),any(Vendor.class)))
                 .willReturn(Mono.just(Vendor.builder().firstName("Check return").lastName("value vendor").id("42").build()));
 
         Mono<Vendor> vendorMono = Mono.just(Vendor.builder().firstName("joe").lastName("doe").id("999").build());
@@ -115,6 +116,23 @@ public class VendorControllerTest {
                 .expectBody(Vendor.class)
                 .value(vendor -> vendor.getId().equals("42"));
 
+    }
+
+    @Test
+    public void TestPatchVendor() {
+        BDDMockito.given(vendorService.patchVendor(any(String.class),any(Vendor.class)))
+                .willReturn(Mono.just(Vendor.builder().firstName("Check return").lastName("value vendor").id("42").build()));
+
+        Mono<Vendor> vendorMono = Mono.just(Vendor.builder().firstName("joe").lastName("doe").id("999").build());
+
+        webTestClient.patch()
+                .uri(VendorController.BASE_URL + "42")
+                .body(vendorMono, Vendor.class)
+                .exchange()
+                .expectStatus()
+                .isAccepted()
+                .expectBody(Vendor.class)
+                .value(vendor -> vendor.getFirstName().equals("Check return"));
     }
 
 }

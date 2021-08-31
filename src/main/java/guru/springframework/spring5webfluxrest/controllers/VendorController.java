@@ -33,14 +33,20 @@ public class VendorController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(BASE_URL)
-    public Mono<Void> createCategory(@RequestBody Publisher<Vendor> vendorPublisher){
+    public Mono<Void> createVendor(@RequestBody Publisher<Vendor> vendorPublisher){
         return vendorService.saveAllVendors(vendorPublisher).then().then();
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(BASE_URL + "{id}")
-    public Mono<Vendor> updateCategory(@PathVariable String id, @RequestBody Vendor vendor) {
+    public Mono<Vendor> updateVendor(@PathVariable String id, @RequestBody Vendor vendor) {
         vendor.setId(id);
-        return vendorService.saveVendor(vendor);
+        return vendorService.saveVendor(id, vendor);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PatchMapping(BASE_URL + "{id}")
+    public  Mono<Vendor> patchVendor(@PathVariable String id, @RequestBody Vendor vendor) {
+        return vendorService.patchVendor(id, vendor);
     }
 }

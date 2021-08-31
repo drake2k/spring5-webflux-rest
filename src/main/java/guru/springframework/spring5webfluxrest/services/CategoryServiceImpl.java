@@ -32,8 +32,21 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Mono<Category> saveCategory(Category category) {
+    public Mono<Category> saveCategory(String id, Category category) {
+        category.setId(id);
         return  categoryRepository.save(category);
+    }
+
+    @Override
+    public Mono<Category> patchCategory(String id, Category category) {
+        return categoryRepository.findById(id).map(cat ->
+        {
+            if(category.getDescription()!=null)
+                cat.setDescription(category.getDescription());
+
+            saveCategory(id, cat);
+            return (cat);
+        });
     }
 
 }

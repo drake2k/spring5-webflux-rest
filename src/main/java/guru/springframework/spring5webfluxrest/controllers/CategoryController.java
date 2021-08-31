@@ -39,9 +39,13 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(BASE_URL + "{id}")
     public Mono<Category> updateCategory(@PathVariable String id, @RequestBody Category category) {
-        category.setId(id);
-        return categoryService.saveCategory(category);
+        return categoryService.saveCategory(id, category);
     }
 
-
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PatchMapping(BASE_URL + "{id}")
+    public Mono<Category> patchCategory(@PathVariable String id, @RequestBody Category category)
+    {
+        return categoryService.patchCategory(id, category);
+    }
 }

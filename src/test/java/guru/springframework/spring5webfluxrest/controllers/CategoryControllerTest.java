@@ -42,7 +42,7 @@ public class CategoryControllerTest {
 
 
     @Test
-    public void TestGetAllCategories(){
+    public void TestGetAllCategories() {
 
         BDDMockito.given(categoryService.getCategories())
                 .willReturn(Flux.just(
@@ -61,7 +61,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void TestGetCategoryByIdFound(){
+    public void TestGetCategoryByIdFound() {
         BDDMockito.given(categoryService.getCategoryById(aUUID))
                 .willReturn(Mono.just(new Category(aUUID, "TEST_CAT")));
 
@@ -74,7 +74,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void TestGetCategoryByIdNotFound(){
+    public void TestGetCategoryByIdNotFound() {
         BDDMockito.given(categoryService.getCategoryById(aUUID))
                 .willReturn(Mono.empty());
 
@@ -85,8 +85,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void TestCreateCategories()
-    {
+    public void TestCreateCategories() {
         BDDMockito.given(categoryService.saveAllCategories(any(Publisher.class)))
                 .willReturn(Flux.just(Category.builder().build()));
 
@@ -102,8 +101,8 @@ public class CategoryControllerTest {
 
 
     @Test
-    public void TestUpdateCategory(){
-        BDDMockito.given(categoryService.saveCategory(any(Category.class)))
+    public void TestUpdateCategory() {
+        BDDMockito.given(categoryService.saveCategory(any(String.class), any(Category.class)))
                 .willReturn(Mono.just(Category.builder().description("Check return value cat").id("42").build()));
 
         Mono<Category> categoryMono = Mono.just(Category.builder().description("TO SAVE CAT").id("999").build());
@@ -118,4 +117,23 @@ public class CategoryControllerTest {
                 .value(category -> category.getId().equals("42"));
 
     }
+
+
+    @Test
+    public void TestPatchCategory() {
+        BDDMockito.given(categoryService.patchCategory(any(String.class),any(Category.class)))
+                .willReturn(Mono.just(Category.builder().description("Check return value cat").id("42").build()));
+
+        Mono<Category> categoryMono = Mono.just(Category.builder().description("TO SAVE CAT").id("999").build());
+
+        webTestClient.patch()
+                .uri(CategoryController.BASE_URL + "42")
+                .body(categoryMono, Category.class)
+                .exchange()
+                .expectStatus()
+                .isAccepted()
+                .expectBody(Category.class)
+                .value(category -> category.getDescription().equals("Check return value cat"));
+    }
+
 }

@@ -11,5 +11,6 @@ public interface CategoryService {
     Flux<Category> getCategories();
     Mono<Category> getCategoryById(String id);
     Flux<Category> saveAllCategories(Publisher<Category> categoryPublisher);
-    Mono<Category> saveCategory(Category category);
+    Mono<Category> saveCategory(String id, Category category);
+    Mono<Category> patchCategory(String id, Category category);
 }

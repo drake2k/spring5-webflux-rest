@@ -31,7 +31,23 @@ public class VendorServiceImpl implements VendorService{
     }
 
     @Override
-    public Mono<Vendor> saveVendor(Vendor vendor) {
+    public Mono<Vendor> saveVendor(String id, Vendor vendor) {
+        vendor.setId(id);
         return vendorRepository.save(vendor);
+    }
+
+    @Override
+    public Mono<Vendor> patchVendor(String id, Vendor vendor) {
+        return vendorRepository.findById(id).map(vend ->
+        {
+            if(vendor.getFirstName()!=null)
+                vend.setFirstName(vendor.getFirstName());
+
+            if(vendor.getLastName()!=null)
+                vend.setLastName(vendor.getLastName());
+
+            vendorRepository.save(vend);
+            return (vend);
+        });
     }
 }
